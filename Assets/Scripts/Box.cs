@@ -15,6 +15,7 @@ public class Box : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private int input;
     private bool isEnabled;
+    private bool disablePopup;
 
     void Start()
     {
@@ -30,6 +31,7 @@ public class Box : MonoBehaviour
         if (highlight != null)
             highlight.enabled = false;
         isEnabled = true;
+        disablePopup = false;
     }
 
     // Update is called once per frame
@@ -44,6 +46,8 @@ public class Box : MonoBehaviour
     void OnMouseEnter()
     {
         if (!isEnabled)
+            return;
+        if (disablePopup)
             return;
         mouseOver = true;
         if(popUp != null)
@@ -116,5 +120,19 @@ public class Box : MonoBehaviour
     {
         spriteRenderer.sprite = Image;
         highlight.sprite = Highlight;
+    }
+    public void DisablePopup()
+    {
+        if(popUp != null)
+            popUpRenderer.enabled = false;
+        disablePopup = true;
+    }
+    public void EnablePopup()
+    {
+        disablePopup = false;
+    }
+    public Vector3 position()
+    {
+        return new Vector3(transform.position.x, transform.position.y, transform.position.z);
     }
 }

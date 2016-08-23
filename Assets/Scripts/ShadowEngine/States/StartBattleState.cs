@@ -2,7 +2,6 @@
 
 class StartBattleState : State
 {
-    bool once;
     public StartBattleState(int ID)
     {
         once = false;
@@ -10,13 +9,14 @@ class StartBattleState : State
     }
     public override int run(ArrayList input)
     {
-        if(!once)
+        if (!once)
         {
-            GameManager.instance.printString("Battle Started");
+            BattleManager.instance.infoStrip.add("Battle Start", 60);
+            BattleManager.instance.highlightManager.setTargetSelector(null, null);
             once = true;
         }
-        if ((bool)input[0])
-            return 1;
-        return 0;
+        if(BattleManager.instance.infoStrip.isActive())
+            return id;
+        return StateTable.TurnOrder;
     }
 }

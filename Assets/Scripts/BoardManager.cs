@@ -14,7 +14,7 @@ public class BoardManager
         characters = Characters;
         healthBars = HealthBars;
         bord = BattleManager.instance.list;
-        turnOrder = BattleManager.instance.order;
+        turnOrder = BattleManager.instance.turnOrder;
     }
     
     public void displayBord()
@@ -28,9 +28,36 @@ public class BoardManager
     }
     public void displaySkills()
     {
+        bool enemyTurn = true;
         Character character = turnOrder.currentCharacter;
+        if (character != null)
+            enemyTurn = character.Enemy;
         for (int i = 0; i < buttons.Length; i++)
-            buttons[i].enable(!character.Enemy);
+            buttons[i].enable(!enemyTurn);
+    }
+    public void hideSkills()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+            buttons[i].enable(false);
+    }
+    public void showSkills()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+            buttons[i].enable(true);
+    }
+    public void hidePopUp()
+    {
+        for (int i = 0; i < characters.Length; i++)
+        {
+            characters[i].DisablePopup();
+        }
+    }
+    public void showPopUp()
+    {
+        for (int i = 0; i < characters.Length; i++)
+        {
+            characters[i].EnablePopup();
+        }
     }
     public void updateHealthBars()
     {

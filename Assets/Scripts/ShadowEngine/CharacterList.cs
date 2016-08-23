@@ -80,4 +80,15 @@ public class CharacterList
     {
         get { return characters; }
     }
+
+    public void temp()
+    {
+        for (int i = 0; i < 100; i++)
+        {
+            for(int j=0;j<List.Count;j++)
+            {
+                ((Character)characters[j]).levelUp();
+            }
+        }
+    }
 }

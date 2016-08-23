@@ -8,15 +8,24 @@ public class TurnOrder
     public TurnOrder()
     {
         order = new ArrayList();
+        turn = -1;
     }
     public Character currentCharacter
     {
-        get { return (Character)order[turn]; }
+        get
+        {
+            if (turn == -1)
+                return null;
+            return (Character)order[turn];
+        }
     }
     public void Order( ArrayList characters)
     {
-        order.Clear();
+        order.Clear(); 
         int length = characters.Count;
+        int[] indexOrder = new int[length];
+        for (int i = 0; i < length; i++)
+            indexOrder[i] = i;
         for (int i = 0; i < length; i++)
         {
             int topSpeed = -1;
@@ -36,15 +45,21 @@ public class TurnOrder
                         index = j;
                 }
             }
-            order.Add(characters[index]);
+            int hold = indexOrder[index];
+            indexOrder[index] = i;
+            indexOrder[i] = hold;
+
         }
+        for (int i = 0; i < length; i++)
+            order.Add(characters[indexOrder[i]]);
+        turn = 0;
     }
     public void nextTurn()
     {
         turn++;
         if (turn >= order.Count)
         {
-            turn = 0;
+            turn = -1;
         }
     }
 }

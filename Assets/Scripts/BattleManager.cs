@@ -9,11 +9,14 @@ public class BattleManager : MonoBehaviour
     public Box[] targets;
     public HealthBar [] healthBars;
     public CharacterList list;
-    public TurnOrder order;
+    public TurnOrder turnOrder;
+    public InfoStrip infoStrip;
     public BoardManager boardManager;
     public HighlightManager highlightManager;
     public SpriteList characterSprite;
     public SpriteList highlightSprite;
+    public GameObject flyingText;
+    public ArrayList AttackList;
     StateMachine machine;
 
     bool once;
@@ -29,9 +32,10 @@ public class BattleManager : MonoBehaviour
 
     void Start ()
     {
+        AttackList = new ArrayList();
         machine = new StateMachine();
         list = new CharacterList();
-        order = new TurnOrder();
+        turnOrder = new TurnOrder();
         highlightManager = new HighlightManager(buttons, targets);
         boardManager = new BoardManager(buttons, targets, healthBars);
         once = false;
@@ -74,17 +78,51 @@ public class BattleManager : MonoBehaviour
             list.addEnemyParty(7, new Character("", TJ));
             list.addEnemyParty(8, new Character("", JJ));
 
-            order.Order(list.List);
+            list.temp();
+
             boardManager.placeSprites();
             boardManager.displayBord();
             boardManager.displaySkills();
             boardManager.setHealthBars();
-            highlightManager.highlightTurnCharacter();
+
             once = true;
         }
         highlightManager.runSkillSelect();
+        highlightManager.highlightTurnCharacter();
         highlightManager.runOverexertSelect();
         highlightManager.runHighlightTarget();
         machine.run(highlightManager.getInputs());
+    }
+
+    public void Order()
+    {
+        turnOrder.Order(list.List);
+    }
+
+    public FlyingText makeText(int index)
+    {
+        GameObject temp = Instantiate(flyingText, targets[index].position(), Quaternion.identity) as GameObject;
+        temp.GetComponent<FlyingText>().instantiate();
+        return temp.GetComponent<FlyingText>();
+    }
+    public void AddAttack(AttackData data)
+    {
+        AttackList.Add(data);
+    }
+    public void applyAttackDamage()
+    {
+        foreach(AttackData data in AttackList)
+        {
+            data.applyDamage();
+            if(data.critical)
+            {
+                FlyingText temp = makeText(data.target.position);
+                temp.setText("" + data.calculateDamage() + "!");
+                temp.critical();
+            }
+            else
+                makeText(data.target.position).setText(""+data.calculateDamage());
+        }
+        AttackList.Clear();
     }
 }

@@ -2,7 +2,6 @@
 
 class EndBattleState : State
 {
-    bool once;
     public EndBattleState(int ID)
     {
         once = false;

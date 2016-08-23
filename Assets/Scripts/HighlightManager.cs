@@ -113,14 +113,17 @@ public class HighlightManager
     {
         for (int i = 0; i < targets.Length; i++)
         {
-                targets[i].highlightOff();
+            targets[i].highlightOff();
         }
         highlightTurnCharacter();
     }
     public void highlightTurnCharacter()
     {
-        int position = BattleManager.instance.order.currentCharacter.position;
-            targets[position].highlightOn(new Color(0, 1, 0));
+        Character currentCharacter = BattleManager.instance.turnOrder.currentCharacter;
+        if (currentCharacter == null)
+            return;
+        int position = currentCharacter.position;
+        targets[position].highlightOn(new Color(0, 1, 0));
     }
     public void setTargetSelector(int[] indexes, int[][] shape)
     {
@@ -138,7 +141,7 @@ public class HighlightManager
         setTargetShape(shape, indexes);
     }
 
-    public void setTargetShape(int[][] shape, int[] indexes)
+    private void setTargetShape(int[][] shape, int[] indexes)
     {
         if (shape == null)
         {
@@ -151,12 +154,27 @@ public class HighlightManager
             targetShape[indexes[i]] = shape[i];
         }
     }
+    public void clearSkillSelected()
+    {
+        overexert = false;
+        skillSelected = 0;
+        clearSkillSelectHighligh();
+        buttons[0].highlightOff();
+    }
     public ArrayList getInputs()
     {
         ArrayList returnArray = new ArrayList();
         returnArray.Add(confirmTarget);
         returnArray.Add(target);
-        returnArray.Add(targetShape);
+        if (target != -1)
+        {
+            if (targetShape == null)
+                returnArray.Add(new int[] { target });
+            else
+                returnArray.Add(targetShape[target]);
+        }
+        else
+            returnArray.Add(null);
         returnArray.Add(skillSelected);
         returnArray.Add(overexert);
         return returnArray;

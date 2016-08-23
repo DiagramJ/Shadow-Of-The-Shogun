@@ -1,6 +1,6 @@
 ﻿using System;
 
-class AttackData
+public class AttackData
 {
     public int baseDamage;
     public Character attacker;
@@ -8,6 +8,8 @@ class AttackData
     public bool critical;
     public bool hit;
     public bool physical;
+    public int damage;
+    private double variance;
 
     public AttackData(int Damage, Character Attacker, Character Target, bool Physical, int Accuracy)
     {
@@ -17,6 +19,7 @@ class AttackData
         physical = Physical;
         critical = GameManager.instance.random.NextDouble() <= .0625;
         hit = GameManager.instance.random.NextDouble() <= Accuracy / 100.0;
+        variance = 0.85 + (GameManager.instance.random.NextDouble() * 0.15);
     }
 
     public int calculateDamage()
@@ -39,7 +42,12 @@ class AttackData
         damage += 2;
         if (critical)
             damage *= 1.5;
-        damage *= 0.85 + (GameManager.instance.random.NextDouble() * 0.15);
+        damage *= variance;
         return (int)damage;
+    }
+
+    public void applyDamage()
+    {
+        target.BattleStats.damage(calculateDamage());
     }
 }

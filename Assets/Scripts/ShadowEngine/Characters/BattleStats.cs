@@ -20,7 +20,7 @@ public class BattleStats
 
     public void damage(int amount)
     {
-        Stats[0] += amount;
+        Stats[0] -= amount;
         if (Stats[0] < 0)
             Stats[0] = 0;
         if (Stats[0] > MaxHp)
