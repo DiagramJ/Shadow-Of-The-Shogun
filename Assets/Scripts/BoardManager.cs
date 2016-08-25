@@ -67,6 +67,7 @@ public class BoardManager
             if (character != null)
             {
                 healthBars[i].setStopNumber(character.BattleStats.HP, character.CoreStats.getHP);
+                healthBars[i].setLoyaltyStopNumber(character.Loyalty);
             }
         }
     }
@@ -78,6 +79,7 @@ public class BoardManager
             if (character != null)
             {
                 healthBars[i].setNumber(character.BattleStats.HP, character.CoreStats.getHP);
+                healthBars[i].setLoyaltyNumber(character.Loyalty);
             }
         }
     }

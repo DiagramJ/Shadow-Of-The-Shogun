@@ -1,24 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BasicAttackSkill : Skill
+public class BasicHealSkill : Skill
 {
-    public BasicAttackSkill()
+    public BasicHealSkill()
     {
         mpCost = 0;
-        name = "Basic Attack";
-        info = "Basic attack 100% accuracy 50 base damage";
+        name = "Basic Heal";
+        info = "Basic Heal 100% accuracy 50 base Healing";
 
-        targets = new int[] { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+
+        targets = new int[] { 0, 1, 2, 4, 5, 6, 7, 8};
         targetShape = null;
 
-        BasicAttackAction tempAction = new BasicAttackAction();
+        BasicHealAction tempAction = new BasicHealAction();
         tempAction.accuracy = 100;
         tempAction.baseDamage = 50;
         tempAction.phisical = true;
         action = tempAction;
 
-        BasicAttackAction tempEnhancedAction = new BasicAttackAction();
+        BasicHealAction tempEnhancedAction = new BasicHealAction();
         tempEnhancedAction.accuracy = 100;
         tempEnhancedAction.baseDamage = 100;
         tempEnhancedAction.phisical = true;

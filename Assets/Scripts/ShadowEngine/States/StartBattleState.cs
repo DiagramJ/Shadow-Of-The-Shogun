@@ -17,6 +17,6 @@ class StartBattleState : State
         }
         if(BattleManager.instance.infoStrip.isActive())
             return id;
-        return StateTable.TurnOrder;
+        return StateList.TurnOrder;
     }
 }

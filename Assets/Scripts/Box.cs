@@ -113,6 +113,7 @@ public class Box : MonoBehaviour
                 popUpRenderer.enabled = Enable;
             if (highlight != null)
                 highlight.enabled = Enable;
+            mouseOver = Enable;
         }
     }
 
@@ -134,5 +135,9 @@ public class Box : MonoBehaviour
     public Vector3 position()
     {
         return new Vector3(transform.position.x, transform.position.y, transform.position.z);
+    }
+    public bool isHighlighted()
+    {
+        return highlight.enabled;
     }
 }

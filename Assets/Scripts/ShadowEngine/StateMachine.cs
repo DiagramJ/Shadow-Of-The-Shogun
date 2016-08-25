@@ -2,12 +2,12 @@
 
 class StateMachine
 {
-    private StateTable table;
+    private StateList table;
     private State currentState;
     private int currentStateID;
     public StateMachine()
     {
-        table = new StateTable();
+        table = new StateList();
         currentState = table.getState(0);
         currentStateID = currentState.getID();
     }

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-abstract class BattleEffect
+public abstract class BattleEffect
 {
     public const int NoType = -1;
     public const int BattleStart = 0;

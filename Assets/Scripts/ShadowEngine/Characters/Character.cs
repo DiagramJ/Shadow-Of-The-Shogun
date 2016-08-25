@@ -2,8 +2,10 @@
 {
     public int position;
 
+    private int loyalty;
     private CoreStats coreStats;
     private BattleStats battleStats;
+    private BattleBuild build;
     private Job job;
     private string name;
     private int level;
@@ -18,10 +20,12 @@
         effortBank = 1;
         coreStats = new CoreStats();
         battleStats = new BattleStats();
+        build = new BattleBuild();
         coreStats.setBaseStats(job.BaseStat);
         coreStats.calculateStats(level);
         battleStats.setStats(coreStats.getStats);
         enemy = false;
+        loyalty = 100;
     }
     public void levelUp()
     {
@@ -58,6 +62,14 @@
     {
         effortBank += coreStats.clearEffortStats();
     }
+    public void addLoyalty(int amount)
+    {
+        loyalty += amount;
+        if (loyalty < 0)
+            loyalty = 0;
+        if (loyalty > 100)
+            loyalty = 100;
+    }
 
     public int EffortBank
     {
@@ -68,7 +80,10 @@
     {
         get { return level; }
     }
-
+    public int Loyalty
+    {
+        get { return loyalty; }
+    }
     public string Name
     {
         set { name = Name; }
@@ -88,6 +103,11 @@
     public BattleStats BattleStats
     {
         get { return battleStats; }
+    }
+
+    public BattleBuild BattleBuild
+    {
+        get { return build; }
     }
 
     public bool Enemy

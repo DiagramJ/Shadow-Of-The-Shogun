@@ -1,4 +1,4 @@
-﻿abstract class Equipment
+﻿public abstract class Equipment
 {
     public string name;
     public string description;

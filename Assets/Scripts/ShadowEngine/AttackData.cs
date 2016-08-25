@@ -9,6 +9,7 @@ public class AttackData
     public bool hit;
     public bool physical;
     public int damage;
+    public bool heal;
     private double variance;
 
     public AttackData(int Damage, Character Attacker, Character Target, bool Physical, int Accuracy)
@@ -17,11 +18,11 @@ public class AttackData
         attacker = Attacker;
         target = Target;
         physical = Physical;
+        heal = false;
         critical = GameManager.instance.random.NextDouble() <= .0625;
         hit = GameManager.instance.random.NextDouble() <= Accuracy / 100.0;
         variance = 0.85 + (GameManager.instance.random.NextDouble() * 0.15);
     }
-
     public int calculateDamage()
     {
         double damage = 0;
@@ -48,6 +49,9 @@ public class AttackData
 
     public void applyDamage()
     {
-        target.BattleStats.damage(calculateDamage());
+        if(heal)
+            target.BattleStats.damage(-calculateDamage());
+        else
+            target.BattleStats.damage(calculateDamage());
     }
 }

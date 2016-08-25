@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System;
 
-public class BasicAttackAction : Action
+public class BasicHealAction : Action
 {
     public int baseDamage;
     public int accuracy;
@@ -14,10 +13,13 @@ public class BasicAttackAction : Action
             if (targets[i] != -1)
             {
                 Character target = (Character)BattleManager.instance.list.get(targets[i]);
-                if (target != null)
+                if(target != null)
                 {
-                    BattleManager.instance.AddAttack(new AttackData(baseDamage, attacker, target, phisical, accuracy));
+                    AttackData temp = new AttackData(baseDamage, attacker, target, phisical, accuracy);
+                    temp.heal = true;
+                    BattleManager.instance.AddAttack(temp);
                 }
+
             }
         }
     }

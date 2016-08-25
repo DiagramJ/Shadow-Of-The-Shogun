@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-class StateTable
+class StateList
 {
     public const int StartBattle = 0;
     public const int EndBattle = 1;
@@ -13,8 +13,9 @@ class StateTable
     public const int RunBattleEffects = 7;
     public const int Attack = 8;
     public const int PostAttack = 9;
+    public const int DeathCheck = 10;
     ArrayList states;
-    public StateTable()
+    public StateList()
     {
         states = new ArrayList();
         states.Add(new StartBattleState(0));
@@ -27,6 +28,7 @@ class StateTable
         states.Add(new RunBattleEffectsState(7));
         states.Add(new AttackState(8));
         states.Add(new PostAttackState(9));
+        states.Add(new DeathCheckState(10));
     }
     public State getState(int index)
     {

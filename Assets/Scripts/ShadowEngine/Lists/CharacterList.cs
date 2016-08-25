@@ -35,8 +35,13 @@ public class CharacterList
         character.position = position + 9;
     }
 
-    public void remove(int index)
+    public void remove(int position)
     {
+        int index;
+        if (position < playerParty.Length)
+            index = playerParty[position];
+        else
+            index = enemyParty[position - 9];
         characters.RemoveAt(index);
         for (int i = 0; i < 9; i++)
         {
@@ -79,16 +84,5 @@ public class CharacterList
     public ArrayList List
     {
         get { return characters; }
-    }
-
-    public void temp()
-    {
-        for (int i = 0; i < 100; i++)
-        {
-            for(int j=0;j<List.Count;j++)
-            {
-                ((Character)characters[j]).levelUp();
-            }
-        }
     }
 }

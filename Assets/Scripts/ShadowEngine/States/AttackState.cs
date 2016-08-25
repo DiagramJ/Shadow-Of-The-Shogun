@@ -4,24 +4,30 @@ using System;
 
 class AttackState : State
 {
-    Skill attack;
     public AttackState ( int ID)
     {
         id = ID;
         once = false;
-        attack = new BasicAttackSkill();
     }
     public override int run(ArrayList input)
     {
         if(!once)
         {
-            attack.run(BattleManager.instance.turnOrder.currentCharacter, (int[])input[2]);
+            SkillList List = BattleManager.instance.skillList;
+            Character current = BattleManager.instance.turnOrder.currentCharacter;
+            int index = current.BattleBuild.basicAttack;
+            if ((int)input[3] != -1)
+                index = current.BattleBuild.skills[(int)input[3]];
+            if ((bool)input[4])
+                List.get(index).runEnhancedAction(BattleManager.instance.turnOrder.currentCharacter, (int[])input[2]);
+            else
+                List.get(index).run(BattleManager.instance.turnOrder.currentCharacter, (int[])input[2]);
             BattleManager.instance.highlightManager.setTargetSelector(null, null);
             BattleManager.instance.highlightManager.clearSkillSelected();
             BattleManager.instance.boardManager.hidePopUp();
             BattleManager.instance.boardManager.hideSkills();
             once = true;
         }
-        return StateTable.PostAttack;
+        return StateList.PostAttack;
     }
 }

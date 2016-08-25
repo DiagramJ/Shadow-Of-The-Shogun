@@ -31,9 +31,12 @@ public class FlyingText : MonoBehaviour
     {
         text.text = message;
     }
-    public void critical()
+    public void setFont( FontStyle style)
     {
-        text.color = new Color(1, 1, 0);
-        text.fontStyle = FontStyle.Bold;
+        text.fontStyle = style;
+    }
+    public void setColor(Color newColor)
+    {
+        text.color = newColor;
     }
 }

@@ -4,6 +4,7 @@ using System.Collections;
 public class HealthBar : MonoBehaviour
 {
     public float speed;
+    public bool loyalty;
     public Color fullColor;
     public Color Over75Color;
     public Color Over50Color;
@@ -12,24 +13,34 @@ public class HealthBar : MonoBehaviour
     private SpriteRenderer bar;
     private SpriteRenderer backGround;
     private SpriteRenderer spriteRenderer;
+    private SpriteRenderer LoyaltyRendere;
     private float number;
     private float stopNumber;
     private int displayMax;
     private int displayMin;
     private TextMesh text;
     private bool isEnabled;
-	void Start ()
+
+    private float loyaltyNumber;
+    private float loyaltyStopNumber;
+
+    void Start ()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         backGround = transform.GetChild(0).GetComponent<SpriteRenderer>();
         bar = transform.GetChild(1).GetComponent<SpriteRenderer>();
-        text = transform.GetChild(2).GetComponent<TextMesh>();
+        LoyaltyRendere = transform.GetChild(2).GetComponent<SpriteRenderer>();
+        text = transform.GetChild(3).GetComponent<TextMesh>();
+        LoyaltyRendere.enabled = loyalty;
         number = 1;
         stopNumber = 1;
         displayMax = 1;
         displayMin = 0;
         isEnabled = true;
-    }
+
+        loyaltyNumber = 1;
+        loyaltyStopNumber = 1;
+}
 
 	void Update ()
     {
@@ -53,6 +64,23 @@ public class HealthBar : MonoBehaviour
             updateColor();
             updateText();
        }
+
+        if (loyaltyStopNumber != loyaltyNumber)
+        {
+            if (loyaltyStopNumber > loyaltyNumber)
+            {
+                loyaltyNumber += speed;
+                if (loyaltyStopNumber < loyaltyNumber)
+                    loyaltyNumber = loyaltyStopNumber;
+            }
+            else
+            {
+                loyaltyNumber -= speed;
+                if (loyaltyStopNumber > loyaltyNumber)
+                    loyaltyNumber = loyaltyStopNumber;
+            }
+            updateLoyalty();
+        }
     }
 
     public void updateBar()
@@ -65,9 +93,23 @@ public class HealthBar : MonoBehaviour
         float newPosition = ((1 - number) * -3);
         newPosition *= transform.localScale.x;
         newPosition += transform.position.x;
-        bar.transform.position = new Vector2(newPosition, transform.position.y);
+        bar.transform.position = new Vector2(newPosition, bar.transform.position.y);
     }
-
+    public void updateLoyalty()
+    {
+        if (loyalty)
+        {
+            if (loyaltyNumber >= 1.1)
+                loyaltyNumber = 1.1f;
+            if (loyaltyNumber <= 0)
+                loyaltyNumber = 0;
+            LoyaltyRendere.transform.localScale = new Vector3(loyaltyNumber, LoyaltyRendere.transform.localScale.y, 1);
+            float newPosition = ((1 - (loyaltyNumber / 1.1f)) * -2.75f);
+            newPosition *= transform.localScale.x;
+            newPosition += transform.position.x;
+            LoyaltyRendere.transform.position = new Vector2(newPosition, LoyaltyRendere.transform.position.y);
+        }
+    }
     public void updateColor()
     {
         if (number == 1)
@@ -102,7 +144,10 @@ public class HealthBar : MonoBehaviour
         bar.enabled = Enable;
         backGround.enabled = Enable;
         spriteRenderer.enabled = Enable;
-        setText("");
+        if(!Enable)
+            setText("");
+        if (loyalty)
+            LoyaltyRendere.enabled = Enable;
     }
     public void setStopNumber(int End, int Max)
     {
@@ -128,5 +173,33 @@ public class HealthBar : MonoBehaviour
         updateBar();
         updateColor();
         updateText();
+    }
+
+    public void setLoyaltyStopNumber(int End)
+    {
+        if (!loyalty)
+            return;
+            loyaltyStopNumber = ((float)End / 100.0f) * 1.1f;
+        if (loyaltyStopNumber > 1.1)
+            loyaltyStopNumber = 1.1f;
+        if (loyaltyStopNumber < 0)
+            loyaltyStopNumber = 0;
+    }
+
+    public void setLoyaltyNumber(int current)
+    {
+        if (!loyalty)
+            return;
+        loyaltyNumber = ((float)current / 100.0f) * 1.1f;
+        if (loyaltyNumber > 1.1)
+            loyaltyNumber = 1.1f;
+        if (loyaltyNumber < 0)
+            loyaltyNumber = 0;
+        loyaltyStopNumber = loyaltyNumber;
+        updateLoyalty();
+    }
+    public bool isMoving()
+    {
+        return stopNumber != number;
     }
 }

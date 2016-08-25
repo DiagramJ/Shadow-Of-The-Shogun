@@ -17,7 +17,7 @@ public class HighlightManager
     {
         buttons = Buttons;
         targets = Targets;
-        skillSelected = 0;
+        skillSelected = -1;
         overexert = false;
         targetable = new bool[targets.Length];
         target = -1;
@@ -25,14 +25,14 @@ public class HighlightManager
     }
     public void runSkillSelect()
     {
-        for (int i = 1; i < 7; i++)
+        for (int i = 0; i < 6; i++)
         {
             if (buttons[i].Input != 0)
             {
                 clearSkillSelectHighligh();
                 if (skillSelected == i)
                 {
-                    skillSelected = 0;
+                    skillSelected = -1;
                 }
                 else
                 {
@@ -46,7 +46,7 @@ public class HighlightManager
     }
     public void clearSkillSelectHighligh()
     {
-        for (int i = 1; i < 7; i++)
+        for (int i = 0; i < 6; i++)
         {
             buttons[i].highlightOff();
         }
@@ -54,18 +54,18 @@ public class HighlightManager
     public void runOverexertSelect()
     {
 
-        if (buttons[0].Input != 0)
+        if (buttons[6].Input != 0)
         {
-            buttons[0].inputOff();
+            buttons[6].inputOff();
             if (overexert)
             {
                 overexert = false;
-                buttons[0].highlightOff();
+                buttons[6].highlightOff();
             }
             else
             {
                 overexert = true;
-                buttons[0].highlightOn(new Color(1, 0, 0));
+                buttons[6].highlightOn(new Color(1, 0, 0));
             }
         }
     }
@@ -123,7 +123,8 @@ public class HighlightManager
         if (currentCharacter == null)
             return;
         int position = currentCharacter.position;
-        targets[position].highlightOn(new Color(0, 1, 0));
+        if(!targets[position].isHighlighted())
+            targets[position].highlightOn(new Color(0, 1, 0));
     }
     public void setTargetSelector(int[] indexes, int[][] shape)
     {
@@ -157,26 +158,33 @@ public class HighlightManager
     public void clearSkillSelected()
     {
         overexert = false;
-        skillSelected = 0;
+        skillSelected = -1;
         clearSkillSelectHighligh();
-        buttons[0].highlightOff();
+        buttons[6].highlightOff();
     }
     public ArrayList getInputs()
     {
         ArrayList returnArray = new ArrayList();
-        returnArray.Add(confirmTarget);
-        returnArray.Add(target);
-        if (target != -1)
+
+        returnArray.Add(confirmTarget); // 0
+        returnArray.Add(target);        // 1
+        returnArray.Add(getTargets());// 2
+        returnArray.Add(skillSelected); // 3
+        returnArray.Add(overexert);     // 4
+        return returnArray;
+    }
+
+    private int [] getTargets()
+    {
+        if (target != -1)               
         {
             if (targetShape == null)
-                returnArray.Add(new int[] { target });
+                return new int[] { target };
             else
-                returnArray.Add(targetShape[target]);
+                return targetShape[target];
         }
         else
-            returnArray.Add(null);
-        returnArray.Add(skillSelected);
-        returnArray.Add(overexert);
-        return returnArray;
+            return null;
+
     }
 }

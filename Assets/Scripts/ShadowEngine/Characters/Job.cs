@@ -4,6 +4,9 @@
     protected string name;
     protected int id;
     protected string sprite;
+    protected int[] availableSkills;
+    protected int[] availableBasicAttacks;
+    protected int[] availableEquipment;
 
     public int[] BaseStat
     {

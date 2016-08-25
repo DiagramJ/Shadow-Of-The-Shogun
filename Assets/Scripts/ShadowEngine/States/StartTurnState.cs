@@ -15,8 +15,8 @@ class StartTurnState : State
             once = true;
         }
         if (BattleManager.instance.turnOrder.currentCharacter.Enemy)
-            return StateTable.ComputerTurn;
-        return StateTable.PlayerTurn;
+            return StateList.ComputerTurn;
+        return StateList.PlayerTurn;
     }
 }
 

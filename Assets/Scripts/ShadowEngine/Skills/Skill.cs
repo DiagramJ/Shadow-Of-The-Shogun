@@ -8,6 +8,8 @@ public abstract class Skill
     public int mpCost;
     public string name;
     public string info;
+    public int[] targets;
+    public int[][] targetShape;
     public virtual void run(Character attacker, int[] targets)
     {
         action.run(attacker, targets);

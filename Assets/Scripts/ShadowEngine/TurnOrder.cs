@@ -32,7 +32,7 @@ public class TurnOrder
             int index = 0;
             for (int j = i; j < length; j++)
             {
-                int speed = ((Character)characters[j]).BattleStats.Speed;
+                int speed = ((Character)characters[indexOrder[j]]).BattleStats.Speed;
                 if (speed > topSpeed)
                 {
                     topSpeed = speed;
@@ -46,9 +46,8 @@ public class TurnOrder
                 }
             }
             int hold = indexOrder[index];
-            indexOrder[index] = i;
+            indexOrder[index] = indexOrder[i];
             indexOrder[i] = hold;
-
         }
         for (int i = 0; i < length; i++)
             order.Add(characters[indexOrder[i]]);
@@ -60,6 +59,21 @@ public class TurnOrder
         if (turn >= order.Count)
         {
             turn = -1;
+        }
+    }
+    public void remove(int characterPosition)
+    {
+        int index = 0;
+        foreach(Character character in order)
+        {
+            if (character.position == characterPosition)
+            {
+                order.Remove(character);
+                if (index <= turn)
+                    turn--;
+                break;
+            }
+            index++;
         }
     }
 }

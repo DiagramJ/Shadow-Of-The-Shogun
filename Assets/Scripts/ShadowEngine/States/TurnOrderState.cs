@@ -15,6 +15,6 @@ class TurnOrderState : State
             BattleManager.instance.Order();
             once = true;
         }
-        return StateTable.StartTurn;
+        return StateList.StartTurn;
     }
 }

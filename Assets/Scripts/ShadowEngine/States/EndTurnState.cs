@@ -18,7 +18,7 @@ class EndTurnState : State
         if (BattleManager.instance.infoStrip.isActive())
             return id;
         if (BattleManager.instance.turnOrder.currentCharacter == null)
-            return StateTable.TurnOrder;
-        return StateTable.StartTurn;
+            return StateList.TurnOrder;
+        return StateList.StartTurn;
     }
 }

@@ -20,6 +20,6 @@ class PostAttackState : State
         }
         if (BattleManager.instance.infoStrip.isActive())
             return id;
-        return StateTable.EndTurn;
+        return StateList.DeathCheck;
     }
 }
