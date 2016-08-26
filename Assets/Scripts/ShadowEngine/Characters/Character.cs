@@ -2,6 +2,7 @@
 {
     public int position;
 
+    private int id;
     private int loyalty;
     private CoreStats coreStats;
     private BattleStats battleStats;
@@ -12,8 +13,9 @@
     private int effortBank;
     private bool enemy;
 
-    public Character(string characterName, Job characterJob)
+    public Character(string characterName, Job characterJob, int ID)
     {
+        id = ID;
         job = characterJob;
         name = characterName;
         level = 1;
@@ -115,12 +117,17 @@
         get { return enemy; }
     }
 
-    public void isAnEnemy()
+    public int ID
+    {
+        get { return id; }
+    }
+
+    public void isEnemy()
     {
         enemy = true;
     }
-    public void switchSides()
+    public void isParty()
     {
-        enemy = !enemy;
+        enemy = false;
     }
 }

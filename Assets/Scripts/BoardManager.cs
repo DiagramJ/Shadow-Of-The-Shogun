@@ -97,4 +97,57 @@ public class BoardManager
             }
         }
     }
+    public int getOpenPlayerPositon()
+    {
+        int result = -1;
+        ArrayList openSlots = new ArrayList();
+        for (int i = 0; i < 9; i++)
+        {
+            if (bord.getPlayerParty(i) == null)
+                openSlots.Add(i);
+        }
+        if (openSlots.Count != 0)
+            result = (int) openSlots[GameManager.instance.random.Next(0, openSlots.Count)];
+        return result;
+    }
+    public int getOpenEnemyPositon()
+    {
+        int result = -1;
+        ArrayList openSlots = new ArrayList();
+        for (int i = 0; i < 9; i++)
+        {
+            if (bord.getEnemyParty(i) == null)
+                openSlots.Add(i + 9);
+        }
+        if (openSlots.Count != 0)
+            result = (int) openSlots[GameManager.instance.random.Next(0, openSlots.Count)];
+        return result;
+    }
+    public void moveCharacter(Character character, int position)
+    {
+        int index = BattleManager.instance.characterSprite.getIndex(character.Job.Sprite);
+        Sprite image = BattleManager.instance.characterSprite.get(index);
+        Sprite highlight = BattleManager.instance.highlightSprite.get(index);
+        characters[position].setSprite(image, highlight);
+
+        if (position < 9)
+        {
+            bord.movePlayerParty(character, position);
+        }
+        else
+        {
+            position -= 9;
+            bord.moveEnemyParty(character, position);
+        }
+        displayBord();
+        setHealthBars();
+    }
+    public void updateSkillText()
+    {
+        int [] skills = turnOrder.currentCharacter.BattleBuild.skills;
+        for (int i=0;i<6;i++)
+        {
+            buttons[i].setText(BattleManager.instance.skillList.get(skills[i]).info);
+        }
+    }
 }

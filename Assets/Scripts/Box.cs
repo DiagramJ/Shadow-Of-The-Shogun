@@ -7,11 +7,10 @@ public class Box : MonoBehaviour
     public int buffer;
     public Color defaultColor;
     public Color mouseOverColor;
-    public GameObject popUp;
+    public PopUp popUp;
     public SpriteRenderer highlight;
 
     private bool mouseOver;
-    private SpriteRenderer popUpRenderer;
     private SpriteRenderer spriteRenderer;
     private int input;
     private bool isEnabled;
@@ -23,11 +22,6 @@ public class Box : MonoBehaviour
         input = 0;
         spriteRenderer = transform.GetComponent<SpriteRenderer>();
         spriteRenderer.color = defaultColor;
-        if (popUp != null)
-        {
-            popUpRenderer = popUp.GetComponent<SpriteRenderer>();
-            popUpRenderer.enabled = false;
-        }
         if (highlight != null)
             highlight.enabled = false;
         isEnabled = true;
@@ -50,8 +44,8 @@ public class Box : MonoBehaviour
         if (disablePopup)
             return;
         mouseOver = true;
-        if(popUp != null)
-            popUpRenderer.enabled = true;
+        if (popUp != null)
+            popUp.show();
         spriteRenderer.color = mouseOverColor;
     }
 
@@ -61,7 +55,7 @@ public class Box : MonoBehaviour
             return;
         mouseOver = false;
         if (popUp != null)
-            popUpRenderer.enabled = false;
+            popUp.hide();
         spriteRenderer.color = defaultColor;
     }
 
@@ -110,7 +104,7 @@ public class Box : MonoBehaviour
         if(!Enable)
         {
             if (popUp != null)
-                popUpRenderer.enabled = Enable;
+                popUp.hide();
             if (highlight != null)
                 highlight.enabled = Enable;
             mouseOver = Enable;
@@ -125,7 +119,7 @@ public class Box : MonoBehaviour
     public void DisablePopup()
     {
         if(popUp != null)
-            popUpRenderer.enabled = false;
+            popUp.hide();
         disablePopup = true;
     }
     public void EnablePopup()
@@ -140,4 +134,9 @@ public class Box : MonoBehaviour
     {
         return highlight.enabled;
     }
+    public void setText(Message message)
+    {
+        popUp.setText(message);
+    }
+
 }

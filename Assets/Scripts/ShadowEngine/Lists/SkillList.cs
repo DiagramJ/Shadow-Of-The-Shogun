@@ -2,12 +2,14 @@
 public class SkillList
 {
     public const int BasicAttack = 0;
-    public const int BasicAllAttackSkill = 1;
-    public const int BasicColumnAttackSkill = 2;
-    public const int BasicRowAttackSkill = 3;
-    public const int BasicHealSkill = 4; 
-    public const int BasicCrossAttackSkill = 5;
-    public const int BasicRandomAttackSkill = 6;
+    public const int BasicAllAttack = 1;
+    public const int BasicColumnAttack = 2;
+    public const int BasicRowAttack = 3;
+    public const int BasicHeal = 4; 
+    public const int BasicCrossAttack = 5;
+    public const int BasicRandomAttack = 6;
+    public const int Betray = 7;
+    public const int Recruit = 8;
 
     ArrayList list;
     public SkillList()
@@ -20,6 +22,8 @@ public class SkillList
         list.Add(new BasicHealSkill());
         list.Add(new BasicCrossAttackSkill());
         list.Add(new BasicRandomAttackSkill());
+        list.Add(new BetraySkill());
+        list.Add(new RecruitSkill());
     }
     public Skill get(int index)
     {

@@ -6,9 +6,10 @@ public class BasicRandomAttackSkill : Skill
     public BasicRandomAttackSkill()
     {
         mpCost = 0;
-        name = "Basic Attack";
-        info = "Basic attack 100% accuracy 50 base damage";
-        
+        name = "Basic Random Attack";
+        info = new Message("Basic attack random\n100% accuracy\n<color=#ff0000ff>50</color> base damage");
+        enhancedInfo = null;
+
         targets = new int[] { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
         targetShape = new int[9][];
         for (int i = 0; i < targetShape.Length; i++)

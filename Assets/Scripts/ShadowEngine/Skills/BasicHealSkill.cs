@@ -7,11 +7,16 @@ public class BasicHealSkill : Skill
     {
         mpCost = 0;
         name = "Basic Heal";
-        info = "Basic Heal 100% accuracy 50 base Healing";
+        info = new Message("Basic heal\n100% accuracy\n<color=#ff0000ff>50</color> base Healing");
+        enhancedInfo = null;
 
 
         targets = new int[] { 0, 1, 2, 4, 5, 6, 7, 8};
         targetShape = null;
+        enhancedTargetShape = new int[9][];
+
+        for (int i = 0; i < enhancedTargetShape.Length; i++)
+            enhancedTargetShape[i] = new int[] { 0, 1, 2, 4, 5, 6, 7, 8 };
 
         BasicHealAction tempAction = new BasicHealAction();
         tempAction.accuracy = 100;

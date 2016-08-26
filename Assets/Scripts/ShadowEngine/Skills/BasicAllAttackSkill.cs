@@ -7,7 +7,8 @@ public class BasicAllAttackSkill : Skill
     {
         mpCost = 0;
         name = "Basic Attack All";
-        info = "Basic attack that hits all enemies 100% accuracy 50 base damage";
+        info = new Message("Basic attack all\n100% accuracy\n<color=#ff0000ff>50</color> base damage");
+        enhancedInfo = null;
 
         targets = new int[] { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
         targetShape = new int[9][];

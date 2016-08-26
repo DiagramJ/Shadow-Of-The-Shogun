@@ -23,6 +23,7 @@ public class CharacterList
         int index = characters.Count;
         characters.Add(character);
         playerParty[position] = index;
+        character.isParty();
         character.position = position;
     }
 
@@ -31,10 +32,38 @@ public class CharacterList
         int index = characters.Count;
         characters.Add(character);
         enemyParty[position] = index;
-        character.isAnEnemy();
+        character.isEnemy();
         character.position = position + 9;
     }
 
+    public void movePlayerParty(Character character, int newPosition)
+    {
+        int index = getIndex(character.position);
+        for (int i = 0; i < 9; i++)
+        {
+            if (playerParty[i] == index)
+                playerParty[i] = -1;
+            if (enemyParty[i] == index)
+                enemyParty[i] = -1;
+        }
+        playerParty[newPosition] = index;
+        character.isParty();
+        character.position = newPosition;
+    }
+    public void moveEnemyParty(Character character, int newPosition)
+    {
+        int index = getIndex(character.position);
+        for (int i = 0; i < 9; i++)
+        {
+            if (playerParty[i] == index)
+                playerParty[i] = -1;
+            if (enemyParty[i] == index)
+                enemyParty[i] = -1;
+        }
+        enemyParty[newPosition] = index;
+        character.isEnemy();
+        character.position = newPosition + 9;
+    }
     public void remove(int position)
     {
         int index;
@@ -80,6 +109,15 @@ public class CharacterList
         if (index < enemyParty.Length)
             return getEnemyParty(index);
         return null;
+    }
+    public int getIndex(int position)
+    {
+        if (position < playerParty.Length)
+            return playerParty[position];
+        position -= 9;
+        if (position < enemyParty.Length)
+            return enemyParty[position];
+        return -1;
     }
     public ArrayList List
     {

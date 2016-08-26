@@ -7,9 +7,12 @@ public abstract class Skill
     protected Action enhancedAction;
     public int mpCost;
     public string name;
-    public string info;
+    public Message info;
+    public Message enhancedInfo;
     public int[] targets;
     public int[][] targetShape;
+    public int[][] enhancedTargetShape;
+
     public virtual void run(Character attacker, int[] targets)
     {
         action.run(attacker, targets);
