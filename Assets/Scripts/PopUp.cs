@@ -35,5 +35,6 @@ public class PopUp : MonoBehaviour
     {
         message = Text.message;
         text.characterSize = Text.size;
+        text.fontStyle = Text.style;
     }
 }

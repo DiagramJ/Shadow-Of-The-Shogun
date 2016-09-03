@@ -37,7 +37,7 @@ public class Box : MonoBehaviour
             input--;
     }
 
-    void OnMouseEnter()
+    void OnMouseOver()
     {
         if (!isEnabled)
             return;
@@ -101,7 +101,8 @@ public class Box : MonoBehaviour
     {
         isEnabled = Enable;
         spriteRenderer.enabled = Enable;
-        if(!Enable)
+        spriteRenderer.color = defaultColor;
+        if (!Enable)
         {
             if (popUp != null)
                 popUp.hide();
@@ -136,7 +137,8 @@ public class Box : MonoBehaviour
     }
     public void setText(Message message)
     {
-        popUp.setText(message);
+        if(popUp != null)
+            popUp.setText(message);
     }
 
 }

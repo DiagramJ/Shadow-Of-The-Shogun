@@ -6,7 +6,7 @@ public class BattleManager : MonoBehaviour
     public static BattleManager instance = null;
 
     public Box [] buttons;
-    public Box[] targets;
+    public Box [] targets;
     public HealthBar [] healthBars;
     public CharacterList list;
     public TurnOrder turnOrder;
@@ -18,8 +18,11 @@ public class BattleManager : MonoBehaviour
     public GameObject flyingText;
     public ArrayList AttackList;
     public SkillList skillList;
+    public TraitList traitList;
     public JobList jobs;
     public LoyaltyManager loyaltyManager;
+    public StatusEffectList statusEffectList;
+    public InfoBox infoBox;
     StateMachine machine;
 
     bool once;
@@ -40,9 +43,11 @@ public class BattleManager : MonoBehaviour
         list = new CharacterList();
         turnOrder = new TurnOrder();
         skillList = new SkillList();
+        traitList = new TraitList();
         jobs = new JobList();
+        statusEffectList = new StatusEffectList();
         loyaltyManager = new LoyaltyManager();
-         highlightManager = new HighlightManager(buttons, targets);
+        highlightManager = new HighlightManager(buttons, targets);
         boardManager = new BoardManager(buttons, targets, healthBars);
         once = false;
 
@@ -55,17 +60,19 @@ public class BattleManager : MonoBehaviour
         if(!once)
         {
             temp();
-
+            buttons[6].setText(new Message("Overexert"));
+            buttons[13].setText(new Message("Guard"));
+            infoBox.hide();
             boardManager.placeSprites();
             boardManager.displayBord();
             boardManager.displaySkills();
             boardManager.setHealthBars();
-
             once = true;
         }
         highlightManager.runSkillSelect();
         highlightManager.highlightTurnCharacter();
         highlightManager.runOverexertSelect();
+        highlightManager.runPressButton();
         highlightManager.runHighlightTarget();
         machine.run(highlightManager.getInputs());
     }
@@ -75,10 +82,10 @@ public class BattleManager : MonoBehaviour
         turnOrder.Order(list.List);
     }
 
-    public FlyingText makeText(int index)
+    public FlyingText makeText(int index, int delay)
     {
         GameObject temp = Instantiate(flyingText, targets[index].position(), Quaternion.identity) as GameObject;
-        temp.GetComponent<FlyingText>().instantiate();
+        temp.GetComponent<FlyingText>().instantiate(delay);
         return temp.GetComponent<FlyingText>();
     }
     public void AddAttack(AttackData data)
@@ -87,22 +94,44 @@ public class BattleManager : MonoBehaviour
     }
     public void applyAttackDamage()
     {
+        int[] delay = new int[targets.Length];
+
         foreach(AttackData data in AttackList)
         {
-            data.applyDamage();
-            FlyingText temp = makeText(data.target.position);
-            if (data.critical)
+            FlyingText temp = makeText(data.target.position, delay[data.target.position]);
+            if (data.miss)
             {
-                temp.setText("" + data.calculateDamage() + "!");
+                temp.setText("miss");
                 temp.setFont(FontStyle.Bold);
-                temp.setColor(new Color(1, 1, 0));
+            }
+            else if(data.FlatDamage)
+            {
+                data.applyDamage();
+                temp.setText("" + data.calculateDamage());
+                if (data.heal)
+                    temp.setColor(new Color(1, 0.714f, 0.757f));
             }
             else
-                temp.setText(""+data.calculateDamage());
-            if(data.heal)
-                temp.setColor(new Color(1, 0.714f, 0.757f));
+            {
+                data.applyDamage();
+                if (data.critical)
+                {
+                    temp.setText("" + data.calculateDamage() + "!");
+                    temp.setFont(FontStyle.Bold);
+                    temp.setColor(new Color(1, 1, 0));
+                }
+                else
+                    temp.setText("" + data.calculateDamage());
+                if (data.heal)
+                    temp.setColor(new Color(1, 0.714f, 0.757f));
+            }
+            delay[data.target.position] += 10;
         }
         AttackList.Clear();
+    }
+    public bool hit(int accuracy)
+    {
+        return GameManager.instance.random.NextDouble() > accuracy / 100.0;
     }
 
 
@@ -113,19 +142,20 @@ public class BattleManager : MonoBehaviour
 
     public void temp()
     {
-        Character Archer1 = new Character("", jobs.get(JobList.Archer), 0);
-        Character Archer2 = new Character("", jobs.get(JobList.Archer), 1);
-        Character Ronin1 = new Character("", jobs.get(JobList.Ronin), 2);
-        Character Ronin2 = new Character("", jobs.get(JobList.Ronin), 3);
-        Character Spearman1 = new Character("", jobs.get(JobList.Spearman), 4);
-        Character Spearman2 = new Character("", jobs.get(JobList.Spearman), 5);
-        Character Monk1 = new Character("", jobs.get(JobList.Monk), 6);
-        Character Monk2 = new Character("", jobs.get(JobList.Monk), 7);
-        Character Shogun = new Character("", jobs.get(JobList.Shogun), 8);
+        Character Archer1 = new Character("Archer1", jobs.get(JobList.Archer), 0);
+        Character Archer2 = new Character("Archer2", jobs.get(JobList.Archer), 1);
+        Character Ronin1 = new Character("Ronin1", jobs.get(JobList.Ronin), 2);
+        Character Ronin2 = new Character("Ronin2", jobs.get(JobList.Ronin), 3);
+        Character Spearman1 = new Character("Spearman1", jobs.get(JobList.Spearman), 4);
+        Character Spearman2 = new Character("Spearman2", jobs.get(JobList.Spearman), 5);
+        Character Monk1 = new Character("Monk1", jobs.get(JobList.Monk), 6);
+        Character Monk2 = new Character("Monk2", jobs.get(JobList.Monk), 7);
+        Character Shogun = new Character("Shogun", jobs.get(JobList.Shogun), 8);
 
         setSkills(Archer1);
         setSkills(Archer2);
         setSkills(Ronin1);
+        Ronin1.BattleBuild.equip(1, new FastStartEquipment());
         setSkills(Ronin2);
         setSkills(Spearman1);
         setSkills(Spearman2);
@@ -147,15 +177,15 @@ public class BattleManager : MonoBehaviour
         Shogun.BattleBuild.setSkill(0, SkillList.Betray);
         Shogun.BattleBuild.setSkill(1, SkillList.Recruit);
 
-        Character Oni1 = new Character("", jobs.get(JobList.Oni), 9);
-        Character Oni2 = new Character("", jobs.get(JobList.Oni), 10);
-        Character Chimera1 = new Character("", jobs.get(JobList.Chimera), 11);
-        Character Chimera2 = new Character("", jobs.get(JobList.Chimera), 12);
-        Character Jorogumo1 = new Character("", jobs.get(JobList.Jorougumo), 13);
-        Character Jorogumo2 = new Character("", jobs.get(JobList.Jorougumo), 14);
-        Character Tengu1 = new Character("", jobs.get(JobList.Tengu), 15);
-        Character Tengu2 = new Character("", jobs.get(JobList.Tengu), 16);
-        Character enemyShogun = new Character("", jobs.get(JobList.Shogun), 17);
+        Character Oni1 = new Character("Oni1", jobs.get(JobList.Oni), 9);
+        Character Oni2 = new Character("Oni2", jobs.get(JobList.Oni), 10);
+        Character Chimera1 = new Character("Chimera1", jobs.get(JobList.Chimera), 11);
+        Character Chimera2 = new Character("Chimera2", jobs.get(JobList.Chimera), 12);
+        Character Jorogumo1 = new Character("Jorogumo1", jobs.get(JobList.Jorougumo), 13);
+        Character Jorogumo2 = new Character("Jorogumo2", jobs.get(JobList.Jorougumo), 14);
+        Character Tengu1 = new Character("Tengu1", jobs.get(JobList.Tengu), 15);
+        Character Tengu2 = new Character("Tengu2", jobs.get(JobList.Tengu), 16);
+        Character enemyShogun = new Character("enemyShogun", jobs.get(JobList.Shogun), 17);
 
         setSkills(Oni1);
         setSkills(Oni2);
@@ -218,7 +248,17 @@ public class BattleManager : MonoBehaviour
         c.BattleBuild.setSkill(2, SkillList.BasicRowAttack);
         c.BattleBuild.setSkill(3, SkillList.BasicColumnAttack);
         c.BattleBuild.setSkill(4, SkillList.BasicHeal);
-        c.BattleBuild.setSkill(5, SkillList.BasicRandomAttack);
-    }
+        c.BattleBuild.setSkill(5, SkillList.BasicDamageOverTime);
 
+        c.BattleBuild.setTraits(0, TraitList.SelfBuffAttack);
+        c.BattleBuild.setTraits(1, TraitList.GuaranteeCriticalHit);
+        c.BattleBuild.setTraits(2, TraitList.SelfHeal);
+        c.BattleBuild.setTraits(3, TraitList.SelfBuffAttack);
+        c.BattleBuild.setTraits(4, TraitList.SelfBuffAttack);
+        c.BattleBuild.setTraits(5, TraitList.SelfBuffAttack);
+    }
+    public StateList stateList
+    {
+        get { return machine.stateList; }
+    }
 }

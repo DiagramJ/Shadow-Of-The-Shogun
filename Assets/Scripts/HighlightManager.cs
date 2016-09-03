@@ -12,6 +12,7 @@ public class HighlightManager
     int target;
     bool confirmTarget;
     bool overexert;
+    int pressButtonInput;
 
     public HighlightManager(Box[] Buttons, Box[] Targets)
     {
@@ -19,6 +20,7 @@ public class HighlightManager
         targets = Targets;
         skillSelected = -1;
         overexert = false;
+        pressButtonInput = -1;
         targetable = new bool[targets.Length];
         target = -1;
         targetShape = null;
@@ -53,7 +55,6 @@ public class HighlightManager
     }
     public void runOverexertSelect()
     {
-
         if (buttons[6].Input != 0)
         {
             buttons[6].inputOff();
@@ -68,6 +69,32 @@ public class HighlightManager
                 buttons[6].highlightOn(new Color(1, 0, 0));
             }
         }
+    }
+    public void highlighSkills()
+    {
+        if(skillSelected != -1)
+            buttons[skillSelected].highlightOn(new Color(1, 1, 0));
+        if(overexert)
+            buttons[6].highlightOn(new Color(1, 0, 0));
+    }
+    public void runPressButton()
+    {
+        for (int i = 7; i < 14; i++)
+        {
+            if (buttons[i].MouseOver)
+                buttons[i].highlightOn(new Color(1, 1, 0));
+            else if (buttons[i].isHighlighted())
+                buttons[i].highlightOff();
+            if (buttons[i].Input != 0)
+            {
+                pressButtonInput = i - 7;
+                buttons[i].inputOff();
+            }
+        }
+    }
+    public void clearPressButton()
+    {
+        pressButtonInput = -1;
     }
     public void runHighlightTarget()
     {
@@ -134,6 +161,11 @@ public class HighlightManager
         }
         if (indexes != null)
         {
+            if(indexes[0] == -1)
+            {
+                setTargetSelf();
+                return;
+            }
             for (int i = 0; i < indexes.Length; i++)
             {
                 targetable[indexes[i]] = true;
@@ -155,6 +187,16 @@ public class HighlightManager
             targetShape[indexes[i]] = shape[i];
         }
     }
+    private void setTargetSelf()
+    {
+        for (int i = 0; i < targetable.Length; i++)
+        {
+            targetable[i] = false;
+        }
+        int index = BattleManager.instance.turnOrder.currentCharacter.position;
+        targetable[index] = true;
+        targetShape = null;
+    }
     public void clearSkillSelected()
     {
         overexert = false;
@@ -171,6 +213,7 @@ public class HighlightManager
         returnArray.Add(getTargets());// 2
         returnArray.Add(skillSelected); // 3
         returnArray.Add(overexert);     // 4
+        returnArray.Add(pressButtonInput); // 5
         return returnArray;
     }
 

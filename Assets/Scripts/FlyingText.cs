@@ -7,29 +7,48 @@ public class FlyingText : MonoBehaviour
     TextMesh text;
     Rigidbody2D body;
     int time;
-	void Start ()
+    int delay;
+    string message;
+    void Start ()
     {
-        instantiate();
     }
-	public void instantiate()
+	public void instantiate(int Delay)
     {
         text = transform.GetChild(0).GetComponent<TextMesh>();
         body = transform.GetComponent<Rigidbody2D>();
-        int x = GameManager.instance.random.Next(-100, 100);
-        int y = GameManager.instance.random.Next(200, 300);
-        body.AddForce(new Vector2(x, y));
         time = lifetime;
+        delay = Delay;
+        body.gravityScale = 0;
+        text.text = "";
     }
 	// Update is called once per frame
 	void Update ()
     {
-        time--;
-        if (time == 0)
-            Destroy(this.gameObject);	
+        if (delay == 0)
+        {
+            body.gravityScale = 2;
+            addForce();
+            delay = -1;
+        }
+        else if(delay != -1)
+            delay--;
+        if(delay == -1)
+        {
+            time--;
+            if (time == 0)
+                Destroy(this.gameObject);
+        }
 	}
-    public void setText(string message)
+    public void addForce()
     {
+        int x = GameManager.instance.random.Next(-200, 200);
+        int y = GameManager.instance.random.Next(500, 600);
+        body.AddForce(new Vector2(x, y));
         text.text = message;
+    }
+    public void setText(string Message)
+    {
+        message = Message;
     }
     public void setFont( FontStyle style)
     {

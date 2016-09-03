@@ -44,6 +44,7 @@ public class BoardManager
     {
         for (int i = 0; i < buttons.Length; i++)
             buttons[i].enable(true);
+        BattleManager.instance.highlightManager.highlighSkills();
     }
     public void hidePopUp()
     {
@@ -66,7 +67,7 @@ public class BoardManager
             Character character = bord.get(i);
             if (character != null)
             {
-                healthBars[i].setStopNumber(character.BattleStats.HP, character.CoreStats.getHP);
+                healthBars[i].setStopNumber(character.BattleStats.HP, character.BattleStats.MaxHP);
                 healthBars[i].setLoyaltyStopNumber(character.Loyalty);
             }
         }
@@ -78,7 +79,7 @@ public class BoardManager
             Character character = bord.get(i);
             if (character != null)
             {
-                healthBars[i].setNumber(character.BattleStats.HP, character.CoreStats.getHP);
+                healthBars[i].setNumber(character.BattleStats.HP, character.BattleStats.MaxHP);
                 healthBars[i].setLoyaltyNumber(character.Loyalty);
             }
         }
@@ -142,12 +143,64 @@ public class BoardManager
         displayBord();
         setHealthBars();
     }
-    public void updateSkillText()
+    public void updateSkillText(bool overexert)
     {
         int [] skills = turnOrder.currentCharacter.BattleBuild.skills;
         for (int i=0;i<6;i++)
         {
-            buttons[i].setText(BattleManager.instance.skillList.get(skills[i]).info);
+            if(overexert && BattleManager.instance.skillList.get(skills[i]).enhancedInfo != null)
+                buttons[i].setText(BattleManager.instance.skillList.get(skills[i]).enhancedInfo);
+            else
+                buttons[i].setText(BattleManager.instance.skillList.get(skills[i]).info);
         }
+        int[] traits = turnOrder.currentCharacter.BattleBuild.traits;
+        int[] cooldown = turnOrder.currentCharacter.BattleStats.TraitCooldown; ;
+        for (int i = 0; i < 6; i++)
+        {
+            Message message = new Message(BattleManager.instance.traitList.get(traits[i]).info);
+            if (cooldown[i] == 1)
+                message.message += "\n" + setColor("#ff0000ff",""+cooldown[i]) + " Turn";
+            else if (cooldown[i] == 0)
+                message.message += "\n "+ setColor("#00ff00ff", "Available");
+            else
+                message.message += "\n" + setColor("#ff0000ff", "" + cooldown[i]) + " Turns";
+            buttons[i + 7].setText(message);
+        }
+    }
+    public void updateCharacterText()
+    {
+        for (int i = 0; i < characters.Length; i++)
+        {
+            Character character = bord.get(i);
+            if (character != null)
+            {
+                Message message = new Message();
+                message.size = 0.24f;
+                string text = character.Name + "\n";
+                text += "Loyalty:" + character.Loyalty + "\n";
+                text += "Atk:" + getStatColor(character.BattleStats.Attack, character.CoreStats.Attack) + "\n";
+                text += "Def:" + getStatColor(character.BattleStats.Defence, character.CoreStats.Defence) + "\n";
+                text += "M.Atk:" + getStatColor(character.BattleStats.MagicAttack, character.CoreStats.MagicAttack) + "\n";
+                text += "M.Def:" + getStatColor(character.BattleStats.MagicDefence, character.CoreStats.MagicDefence) + "\n";
+                text += "Spd:" + getStatColor(character.BattleStats.Speed, character.CoreStats.Speed);
+                message.message = text;
+                message.style = FontStyle.Bold;
+                characters[i].setText(message);
+            }
+        }
+
+    }
+    private string getStatColor(int current, int core)
+    {
+        string color = "#000000ff";
+        if (current < core)
+            color = "#ff0000ff";
+        if (current > core)
+            color = "#0000ffff";
+        return "<color="+color+">"+current+"</color>";
+    }
+    private string setColor(string color, string message)
+    {
+        return "<color=" + color + ">" + message + "</color>";
     }
 }
